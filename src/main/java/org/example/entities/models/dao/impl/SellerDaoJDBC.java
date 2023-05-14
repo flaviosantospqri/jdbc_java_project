@@ -10,13 +10,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.List;
 
 public class SellerDaoJDBC implements SellerDAO {
     private Connection conn;
 
-    public SellerDaoJDBC(Connection conn){
+    public SellerDaoJDBC(Connection conn) {
         this.conn = conn;
     }
 
@@ -43,40 +42,50 @@ public class SellerDaoJDBC implements SellerDAO {
         try {
             st = conn.prepareStatement(
                     "SELECT seller. *,department.Name as DepName "
-                    + "FROM seller INNER JOIN department "
-                    + "ON seller.DepartmentID = departmentId "
-                    + "WHERE seller.Id = ?"
+                            + "FROM seller INNER JOIN department "
+                            + "ON seller.DepartmentID = departmentId "
+                            + "WHERE seller.Id = ?"
             );
 
             st.setInt(1, id);
             rs = st.executeQuery();
 
-            if(rs.next()){
-                Department dp = new Department();
+            if (rs.next()) {
+                Department dp = instatiatiNewDep(rs);
 
-                dp.setId(rs.getInt("DepartmentId"));
-                dp.setName(rs.getString("DepName"));
+                return instatiatiNewSeller(rs, dp);
 
-                Seller obj = new Seller();
-                obj.setId(rs.getInt("Id"));
-                obj.setEmail(rs.getString("Name"));
-                obj.setEmail(rs.getString("Email"));
-                obj.setBaseSalary(rs.getDouble("BaseSalary"));
-                obj.setBirthDate(rs.getDate("birthDate").toLocalDate());
-                obj.setDepartment(dp);
-
-                return obj;
-
-            }else {
+            } else {
                 return null;
             }
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DbException("Error" + e.getMessage());
-        }finally {
+        } finally {
             DB.closeResulSet(rs);
             DB.closeStatement(st);
         }
+    }
+
+    private Seller instatiatiNewSeller(ResultSet rs, Department dp) throws SQLException {
+        Seller obj = new Seller();
+        obj.setId(rs.getInt("Id"));
+        obj.setEmail(rs.getString("Name"));
+        obj.setEmail(rs.getString("Email"));
+        obj.setBaseSalary(rs.getDouble("BaseSalary"));
+        obj.setBirthDate(rs.getDate("birthDate").toLocalDate());
+        obj.setDepartment(dp);
+
+        return obj;
+    }
+
+    private Department instatiatiNewDep(ResultSet rs) throws SQLException {
+        Department dp = new Department();
+
+        dp.setId(rs.getInt("DepartmentId"));
+        dp.setName(rs.getString("DepName"));
+
+        return dp;
     }
 
     @Override
