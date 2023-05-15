@@ -7,13 +7,14 @@ import org.example.entities.models.dao.DaoFactory;
 import org.example.entities.models.dao.SellerDAO;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
         Department dp = new Department(1, "Books");
 
-        Seller sl = new Seller(1, "Jose","jose@jose.com.br",LocalDate.now(),1200.00,dp);
+        Seller sl = new Seller(1, "Jose","jose@jose.com.br",new Date(),1200.00,dp);
 
         SellerDAO sellerDAO = DaoFactory.createSellerDao();
 
@@ -36,7 +37,13 @@ public class Main {
             System.out.println(obj);
         }
 
+        System.out.println("/n === TEST 1: SELLER INSERT");
 
+        Seller newSeller = new Seller(null, "Greg", "greg@greg.com", new Date(), 4000.0, department);
+
+        sellerDAO.insert(newSeller);
+
+        System.out.println("Inserted" + newSeller.getId());
 
     }
 }
