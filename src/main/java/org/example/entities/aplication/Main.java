@@ -9,9 +9,11 @@ import org.example.entities.models.dao.SellerDAO;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
         Department dp = new Department(1, "Books");
 
         Seller sl = new Seller(1, "Jose","jose@jose.com.br",new Date(),1200.00,dp);
@@ -54,6 +56,13 @@ public class Main {
         sellerDAO.update(seller);
 
         System.out.println("Update completed");
+
+        System.out.println("/n === TEST 1: SELLER DELETE");
+
+        System.out.println("Delete number id");
+        int id = sc.nextInt();
+        sellerDAO.deleteById(id);
+        System.out.println("Delete completed");
 
     }
 }
